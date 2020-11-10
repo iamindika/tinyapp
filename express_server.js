@@ -19,6 +19,8 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+
+// "GET" Request Route handlers
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -36,13 +38,6 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.post("/urls", (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
-  //console.log(shortURL);
-  res.redirect(`/urls/${shortURL}`);
-})
-
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   //console.log(templateVars);
@@ -54,8 +49,21 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   //console.log(longURL);
   res.redirect(`${longURL}`);
-})
+});
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
-})
+});
+
+app.post("/urls", (req, res) => {
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  //console.log(shortURL);
+  res.redirect(`/urls/${shortURL}`);
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+  const shortURL = req.params.shortURL;
+  delete(urlDatabase[shortURL]);
+  res.redirect('/urls');
+});
