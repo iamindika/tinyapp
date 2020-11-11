@@ -20,10 +20,19 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+// Create URLs
+app.get("/urls/new", (req, res) => {
+  const templateVars = {username: req.cookies["username"]}
+  res.render("urls_new", templateVars);
+});
 
-// "GET" Request Route handlers
+// Display Data
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+app.get("/hello", (req, res) => {
+  res.send("<html><body>Hello <b>World</b></body></html>\n")
 });
 
 app.get("/urls.json", (req, res) => {
@@ -35,10 +44,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app.get("/urls/new", (req, res) => {
-  const templateVars = {username: req.cookies["username"]}
-  res.render("urls_new", templateVars);
-});
+
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"]};
@@ -46,14 +52,11 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  console.log(req.params.shortURL)
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(`${longURL}`);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n")
-});
+
 
 //"POST" Request Route Handlers
 
@@ -78,8 +81,13 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
 });
 
-// LOGIN
+// LOGIN - LOGOUT
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
+  res.redirect('/urls');
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
   res.redirect('/urls');
 });
