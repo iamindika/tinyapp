@@ -68,3 +68,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   console.log('deleted!');
   res.redirect('/urls');
 });
+
+app.post("/urls/:id", (req, res) => {
+  const shortURL = req.params.id;
+  const newLongURL = req.body.longURL;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect('/urls');
+});
