@@ -54,6 +54,8 @@ app.get("/hello", (req, res) => {
 });
 
 //"POST" Request Route Handlers
+
+//Add a input checker for '/urls' ==> triggering generateRandomString for an empty input field on button click.  
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
