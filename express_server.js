@@ -40,14 +40,12 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
-  //console.log(templateVars);
   res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
   console.log(req.params.shortURL)
   const longURL = urlDatabase[req.params.shortURL];
-  //console.log(longURL);
   res.redirect(`${longURL}`);
 });
 
@@ -55,15 +53,16 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
 });
 
+//"POST" Request Route Handlers
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  //console.log(shortURL);
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   delete(urlDatabase[shortURL]);
+  console.log('deleted!');
   res.redirect('/urls');
 });
