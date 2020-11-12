@@ -81,7 +81,11 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
 });
 
-// LOGIN - LOGOUT
+// LOGIN OPTIONS
+app.get("/register", (req, res) => {
+  res.render('urls_register');
+})
+
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
   res.redirect('/urls');
