@@ -14,12 +14,16 @@ app.set("view engine", "ejs");
 
 //DATABASE
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5sk": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 const users = {
-
+  aJ48lW: {
+    id: 'aJ48lW', 
+    email: 'admin@myadmin.com',
+    password: 'strongPassword'
+  }
 };
 
 app.listen(PORT, () => {
@@ -36,12 +40,12 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]]};
+  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies["user_id"]]};
   res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(`${longURL}`);
 });
 
@@ -69,7 +73,7 @@ app.get("/urls", (req, res) => {
 //Add a input checker for '/urls' ==> triggering generateRandomString for an empty input field on button click.  
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL].long = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
 });
 
