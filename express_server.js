@@ -11,10 +11,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
 
+//DATABASE
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5sk": "http://www.google.com"
-}
+};
+
+const users = {
+
+};
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -83,7 +88,19 @@ app.post("/urls/:id", (req, res) => {
 
 // LOGIN OPTIONS
 app.get("/register", (req, res) => {
-  res.render('urls_register');
+  res.render('user_register');
+})
+
+app.post("/register", (req, res) => {
+  const userId = generateRandomString();
+  users[userId] = {
+    id: userId, 
+    email: req.body.email,
+    password: req.body.password
+  }
+  res.cookie("user_id", userId);
+  console.log(users);
+  res.redirect('/urls');
 })
 
 app.post("/login", (req, res) => {
