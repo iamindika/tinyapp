@@ -4,6 +4,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const { response } = require("express");
 
 
 //MIDDLE-WARE
@@ -106,7 +107,6 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   }
-  console.log(users);
   res.cookie("user_id", userId);
   res.redirect('/urls');
 })
@@ -116,7 +116,17 @@ app.get('/login', (req, res) => {
 })
 // Need to fix since we're only setting a user_id cookie now from registration
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
+  const email = req.body.email;
+  const password = req.body.password;
+  const userId = getUser(users, email);
+  if (!userId) {
+    response.statusCode = 403;
+    return res.send('Error: Invalid email!');
+  } else if (password !== users[userId].password) {
+    response.statusCode = 403;
+    return res.send('Error: Invalid password!');
+  }
+  res.cookie("user_id", userId);
   res.redirect('/urls');
 });
 

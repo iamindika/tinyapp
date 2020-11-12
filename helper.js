@@ -21,10 +21,10 @@ const generateRandomString = () => {
 const getUser = (userDb, email) => {
   for (const userId in userDb) {
     if (email === userDb[userId].email) {
-      return true;
+      return userId;
     }
   }
-  return false;
+  return null;
 }
 // Tester code:
 // console.log(generateRandomString());
