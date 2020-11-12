@@ -1,4 +1,4 @@
-function generateRandomString() {
+const generateRandomString = () => {
   let str = "";
   for (let i = 0; i < 6; i++){
     let randomChoice = Math.floor(Math.random() * 3) + 1;
@@ -18,8 +18,16 @@ function generateRandomString() {
   return str;
 }
 
+const getUser = (userDb, email) => {
+  for (const userId in userDb) {
+    if (email === userDb[userId].email) {
+      return true;
+    }
+  }
+  return false;
+}
 // Tester code:
 // console.log(generateRandomString());
 
-module.exports = { generateRandomString };
+module.exports = { generateRandomString, getUser };
 

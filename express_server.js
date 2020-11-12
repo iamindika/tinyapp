@@ -1,5 +1,5 @@
 const express = require("express");
-const { generateRandomString } = require("./helper");
+const { generateRandomString, getUser } = require("./helper");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
@@ -75,7 +75,6 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   delete(urlDatabase[shortURL]);
-  console.log('deleted!');
   res.redirect('/urls');
 });
 
@@ -92,14 +91,23 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || ! password) {
+    res.statusCode = 400;
+    return res.send('Error: Please enter an email and password!');
+  } else if (getUser(users, email)) {
+      res.statusCode = 400;
+      return res.send('Error: Email already exists.  Please Sign in!');
+  }
   const userId = generateRandomString();
   users[userId] = {
     id: userId, 
     email: req.body.email,
     password: req.body.password
   }
-  res.cookie("user_id", userId);
   console.log(users);
+  res.cookie("user_id", userId);
   res.redirect('/urls');
 })
 
