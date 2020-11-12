@@ -111,6 +111,9 @@ app.post("/register", (req, res) => {
   res.redirect('/urls');
 })
 
+app.get('/login', (req, res) => {
+  res.render("user_login");
+})
 // Need to fix since we're only setting a user_id cookie now from registration
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
