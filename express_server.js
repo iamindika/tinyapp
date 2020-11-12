@@ -28,8 +28,21 @@ app.listen(PORT, () => {
 
 // Create URLs
 app.get("/urls/new", (req, res) => {
+  if(!req.cookies.user_id) {
+    res.redirect('/login');
+  }
   const templateVars = {user: users[req.cookies["user_id"]]};
   res.render("urls_new", templateVars);
+});
+
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]]};
+  res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(`${longURL}`);
 });
 
 // Display Data
@@ -49,19 +62,6 @@ app.get("/urls", (req, res) => {
   const templateVars = {urls: urlDatabase, user: users[req.cookies["user_id"]]};
   res.render("urls_index", templateVars);
 });
-
-
-
-app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]]};
-  res.render("urls_show", templateVars);
-});
-
-app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(`${longURL}`);
-});
-
 
 
 //"POST" Request Route Handlers
