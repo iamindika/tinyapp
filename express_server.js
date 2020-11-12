@@ -114,7 +114,7 @@ app.post("/register", (req, res) => {
 app.get('/login', (req, res) => {
   res.render("user_login");
 })
-// Need to fix since we're only setting a user_id cookie now from registration
+
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -131,6 +131,6 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect('/urls');
 });
