@@ -33,7 +33,7 @@ const users = {
   }
 };
 
-// MAIN PAGE
+// DISPLAY ALL USER URLS
 app.get("/", (req, res) => {
   if (req.session.user_id) {
     res.redirect('/urls');
@@ -49,7 +49,7 @@ app.get("/urls", (req, res) => {
 });
 
 
-// Create URLs
+// CREATE SHORT LINKS
 app.get("/urls/new", (req, res) => {
   if(!req.session.user_id) {
     res.redirect('/login');
@@ -58,57 +58,19 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-app.get("/urls/:shortURL", (req, res) => {
-  const userId = req.session.user_id;
-  const shortURL = req.params.shortURL;
-  const userUrls = urlsForUser(urlDatabase, userId);
-  const templateVars = {shortURL, longURL: userUrls[shortURL], user: users[userId]};
-  res.render("urls_show", templateVars);
-});
-
-app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  res.redirect(`${longURL}`);
-});
-
-// Display Data
-
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n")
-});
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-
-
-
-//"POST" Request Route Handlers
-
-//Add a input checker for '/urls' ==> triggering generateRandomString for an empty input field on button click.  
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session.user_id};
   res.redirect(`/urls/${shortURL}`);
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
+// EDIT SHORT LINKS
+app.get("/urls/:shortURL", (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
-  console.log('userId:', userId, 'shortURL:', shortURL)
-  if (userId) {
-    userURLs = urlsForUser(urlDatabase, userId);
-    if (userURLs[shortURL]) {
-      delete(urlDatabase[shortURL]);
-      res.redirect('/urls');
-    } else {
-      return res.status(400).send('Bad Request!');
-    }
-  } else {
-    return res.status(401).send('Unauthorized access!');
-  }
+  const userUrls = urlsForUser(urlDatabase, userId);
+  const templateVars = {shortURL, longURL: userUrls[shortURL], user: users[userId]};
+  res.render("urls_show", templateVars);
 });
 
 app.post("/urls/:id", (req, res) => {
@@ -129,7 +91,33 @@ app.post("/urls/:id", (req, res) => {
   }
 });
 
-// LOGIN OPTIONS
+// DELETE SHORT LINK
+app.post("/urls/:shortURL/delete", (req, res) => {
+  const userId = req.session.user_id;
+  const shortURL = req.params.shortURL;
+  console.log('userId:', userId, 'shortURL:', shortURL)
+  if (userId) {
+    userURLs = urlsForUser(urlDatabase, userId);
+    if (userURLs[shortURL]) {
+      delete(urlDatabase[shortURL]);
+      res.redirect('/urls');
+    } else {
+      return res.status(400).send('Bad Request!');
+    }
+  } else {
+    return res.status(401).send('Unauthorized access!');
+  }
+});
+
+
+// LINK TO LONG URL
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  res.redirect(`${longURL}`);
+});
+
+
+// REGISTER
 app.get("/register", (req, res) => {
   res.render('user_register');
 })
@@ -155,6 +143,7 @@ app.post("/register", (req, res) => {
   res.redirect('/urls');
 })
 
+//LOGIN
 app.get('/login', (req, res) => {
   res.render("user_login");
 })
@@ -174,7 +163,16 @@ app.post("/login", (req, res) => {
   res.redirect('/urls');
 });
 
+// LOGOUT
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect('/urls');
+});
+
+app.get("/hello", (req, res) => {
+  res.send("<html><body>Hello <b>World</b></body></html>\n")
+});
+
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
 });
