@@ -18,7 +18,7 @@ const generateRandomString = () => {
   return str;
 }
 
-const getUser = (userDb, email) => {
+const getUserByEmail = (userDb, email) => {
   for (const userId in userDb) {
     if (email === userDb[userId].email) {
       return userId;
@@ -52,5 +52,5 @@ const urlsForUser = (urlDb, id) => {
 // console.log('password 1: ', pass1, 'password 2: ', pass2);
 // console.log(pass1 === pass2);
 
-module.exports = { generateRandomString, getUser, urlsForUser };
+module.exports = { generateRandomString, getUserByEmail, urlsForUser };
 
