@@ -29,9 +29,9 @@ const urlDatabase = {
 
 const users = {
   aJ48lW: {
-    id: 'aJ48lW', 
+    id: 'aJ48lW',
     email: 'admin@myadmin.com',
-    password: bcrypt.hashSync('1234', 10)   // Password visible for test purposes 
+    password: bcrypt.hashSync('1234', 10)   // Password visible for test purposes
   }
 };
 
@@ -54,7 +54,7 @@ app.get("/urls", (req, res) => {
 
 // CREATE SHORT LINKS
 app.get("/urls/new", (req, res) => {
-  if(!req.session.user_id) {
+  if (!req.session.user_id) {
     res.redirect('/login');
   }
   const templateVars = {user: users[req.session.user_id]};
@@ -81,9 +81,8 @@ app.post("/urls/:id", (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.id;
   const newLongURL = req.body.longURL;
-  console.log(newLongURL);
   if (userId) {
-    userURLs = urlsForUser(urlDatabase, userId);
+    let userURLs = urlsForUser(urlDatabase, userId);
     if (userURLs[shortURL]) {
       urlDatabase[shortURL].longURL = newLongURL;
       res.redirect('/urls');
@@ -100,9 +99,8 @@ app.post("/urls/:id", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
-  console.log('userId:', userId, 'shortURL:', shortURL)
   if (userId) {
-    userURLs = urlsForUser(urlDatabase, userId);
+    let userURLs = urlsForUser(urlDatabase, userId);
     if (userURLs[shortURL]) {
       delete(urlDatabase[shortURL]);
       res.redirect('/urls');
@@ -125,7 +123,7 @@ app.get("/u/:shortURL", (req, res) => {
 // REGISTER
 app.get("/register", (req, res) => {
   res.render('user_register');
-})
+});
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
@@ -133,24 +131,24 @@ app.post("/register", (req, res) => {
   if (!email || ! password) {
     return res.status(400).send('Error: Enter email and password!');
   } else if (getUserByEmail(users, email)) {
-      return res.status(400).send('Error: Email already exists.  Please Sign in!');
+    return res.status(400).send('Error: Email already exists.  Please Sign in!');
   }
   const userId = generateRandomString();
   password = bcrypt.hashSync(req.body.password, 10);
   users[userId] = {
-    id: userId, 
+    id: userId,
     email,
     password,
-  }
+  };
   req.session.user_id = userId;
   res.redirect('/urls');
-})
+});
 
 
 //LOGIN
 app.get('/login', (req, res) => {
   res.render("user_login");
-})
+});
 
 app.post("/login", (req, res) => {
   const email = req.body.email;
@@ -170,14 +168,4 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect('/urls');
-});
-
-
-//
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n")
-});
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
 });
