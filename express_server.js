@@ -78,7 +78,7 @@ app.get("/urls", (req, res) => {
 //Add a input checker for '/urls' ==> triggering generateRandomString for an empty input field on button click.  
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL].long = req.body.longURL;
+  urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.cookies.user_id};
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -110,10 +110,10 @@ app.post("/urls/:id", (req, res) => {
       urlDatabase[shortURL].longURL = newLongURL;
       res.redirect('/urls');
     } else {
-      return res.status(400).send('Bad request!');
+      return res.status(400).send('Bad Request!');
     }
   } else {
-    return res.status(401).send('Unauthorized access!');
+    return res.status(400).send('Bad Request!');
   }
 });
 
@@ -154,7 +154,7 @@ app.post("/login", (req, res) => {
   if (!userId) {
     response.statusCode = 403;
     return res.send('Error: Invalid email!');
-  } else if (password !== users[userId].password) {
+  } else if (!bcrypt.compareSync(password, users[userId].password)) {
     response.statusCode = 403;
     return res.send('Error: Invalid password!');
   }

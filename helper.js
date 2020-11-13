@@ -46,5 +46,11 @@ const urlsForUser = (urlDb, id) => {
 
 // console.log(urlsForUser(urlDatabase, "aJ48lW"));
 
+// const bcrypt = require('bcrypt');
+// const pass1 = bcrypt.hashSync("aJ48lW", 10);
+// const pass2 = bcrypt.hashSync("aJ48lW", 10);
+// console.log('password 1: ', pass1, 'password 2: ', pass2);
+// console.log(pass1 === pass2);
+
 module.exports = { generateRandomString, getUser, urlsForUser };
 

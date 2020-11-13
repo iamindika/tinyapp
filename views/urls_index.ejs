@@ -13,7 +13,7 @@
   <main style="margin: 1em;">
     <% if (!user) { %>
     <h3>Please Login or Register</h3>
-    <% } else { %>}
+    <% } else { %>
     <h3>My URLs</h3>
     <table class="table">
       <thead>
@@ -28,7 +28,7 @@
         <% for(let url in urls) { %>
           <tr>
             <td><%= url %></td>
-            <td><%= urls[url].longURL %></td>
+            <td><%= urls[url] %></td>
             <td>
               <a href="/urls/<%= url %>"><button type="submit" class="btn btn-primary">EDIT</button>
               </a>
