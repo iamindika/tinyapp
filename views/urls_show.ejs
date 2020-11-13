@@ -10,9 +10,11 @@
   <%- include('partials/_header') %>
   <% if (!user) { %>
     <h3>Please Login or Register</h3>
-    <% } else if (!longURL) { %>
+  <% } else if (!urls[shortURL]) { %>
+      <h3>Short Link does not Exist!</h3>
+  <% } else if (!longURL) { %>
     <h3>User does not have access to that link!</h3>
-    <% } else { %>
+  <% } else { %>
     <div class="card text-center">
         <div class="card-header"></div>
         <div class="card-body">

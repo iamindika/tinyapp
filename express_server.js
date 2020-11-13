@@ -6,6 +6,7 @@ const cookieSession = require("cookie-session");
 const { response } = require("express");
 const bcrypt = require('bcrypt');
 
+
 // MIDDLEWARE && SERVER SETUP
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
@@ -18,6 +19,7 @@ const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
 
 // DATABASES
 const urlDatabase = {
@@ -32,6 +34,7 @@ const users = {
     password: bcrypt.hashSync('1234', 10)   // Password visible for test purposes 
   }
 };
+
 
 // DISPLAY ALL USER URLS
 app.get("/", (req, res) => {
@@ -64,12 +67,13 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+
 // EDIT SHORT LINKS
 app.get("/urls/:shortURL", (req, res) => {
   const userId = req.session.user_id;
   const shortURL = req.params.shortURL;
   const userUrls = urlsForUser(urlDatabase, userId);
-  const templateVars = {shortURL, longURL: userUrls[shortURL], user: users[userId]};
+  const templateVars = {shortURL, longURL: userUrls[shortURL], user: users[userId], urls: urlDatabase};
   res.render("urls_show", templateVars);
 });
 
@@ -90,6 +94,7 @@ app.post("/urls/:id", (req, res) => {
     return res.status(400).send('Bad Request!');
   }
 });
+
 
 // DELETE SHORT LINK
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -143,6 +148,7 @@ app.post("/register", (req, res) => {
   res.redirect('/urls');
 })
 
+
 //LOGIN
 app.get('/login', (req, res) => {
   res.render("user_login");
@@ -163,12 +169,15 @@ app.post("/login", (req, res) => {
   res.redirect('/urls');
 });
 
+
 // LOGOUT
 app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect('/urls');
 });
 
+
+//
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
 });
