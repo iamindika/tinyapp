@@ -23,7 +23,7 @@ const users = {
   aJ48lW: {
     id: 'aJ48lW', 
     email: 'admin@myadmin.com',
-    password: 'strongPassword'
+    password: bcrypt.hashSync('strongPassword', 10)
   }
 };
 
@@ -124,7 +124,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
+  let password = req.body.password;
   if (!email || ! password) {
     res.statusCode = 400;
     return res.send('Error: Please enter an email and password!');
@@ -133,10 +133,11 @@ app.post("/register", (req, res) => {
       return res.send('Error: Email already exists.  Please Sign in!');
   }
   const userId = generateRandomString();
+  password = bcrypt.hashSync(req.body.password, 10);
   users[userId] = {
     id: userId, 
-    email: req.body.email,
-    password: req.body.password
+    email,
+    password,
   }
   res.cookie("user_id", userId);
   res.redirect('/urls');
