@@ -5,6 +5,7 @@ const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { response } = require("express");
+const bcrypt = require('bcrypt');
 
 
 //MIDDLE-WARE
