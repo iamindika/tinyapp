@@ -25,9 +25,26 @@ const getUser = (userDb, email) => {
     }
   }
   return null;
-}
+};
+
+const urlsForUser = (urlDb, id) => {
+  let userUrls = {};
+  for (const shortURL in urlDb) {
+    if (urlDb[shortURL].userID === id) {
+      userUrls[shortURL] = urlDb[shortURL].longURL;
+    }
+  }
+  return userUrls;
+};
 // Tester code:
 // console.log(generateRandomString());
 
-module.exports = { generateRandomString, getUser };
+// const urlDatabase = {
+//   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+//   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+// };
+
+// console.log(urlsForUser(urlDatabase, "aJ48lW"));
+
+module.exports = { generateRandomString, getUser, urlsForUser };
 

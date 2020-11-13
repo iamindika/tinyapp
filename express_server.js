@@ -1,5 +1,5 @@
 const express = require("express");
-const { generateRandomString, getUser } = require("./helper");
+const { generateRandomString, getUser, urlsForUser } = require("./helper");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
@@ -40,7 +40,10 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies["user_id"]]};
+  const userId = req.cookies.user_id;
+  const shortURL = req.params.shortURL;
+  const userUrls = urlsForUser(urlDatabase, userId);
+  const templateVars = {shortURL, longURL: userUrls[shortURL], user: users[userId]};
   res.render("urls_show", templateVars);
 });
 
@@ -63,7 +66,8 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = {urls: urlDatabase, user: users[req.cookies["user_id"]]};
+  const userId = req.cookies.user_id;
+  const templateVars = {urls: urlsForUser(urlDatabase, userId), user: users[userId]};
   res.render("urls_index", templateVars);
 });
 
@@ -78,16 +82,38 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  const userId = req.cookies.user_id;
   const shortURL = req.params.shortURL;
-  delete(urlDatabase[shortURL]);
-  res.redirect('/urls');
+  console.log('userId:', userId, 'shortURL:', shortURL)
+  if (userId) {
+    userURLs = urlsForUser(urlDatabase, userId);
+    if (userURLs[shortURL]) {
+      delete(urlDatabase[shortURL]);
+      res.redirect('/urls');
+    } else {
+      return res.status(400).send('Bad Request!');
+    }
+  } else {
+    return res.status(401).send('Unauthorized access!');
+  }
 });
 
 app.post("/urls/:id", (req, res) => {
+  const userId = req.cookies.user_id;
   const shortURL = req.params.id;
   const newLongURL = req.body.longURL;
-  urlDatabase[shortURL] = newLongURL;
-  res.redirect('/urls');
+  console.log(newLongURL);
+  if (userId) {
+    userURLs = urlsForUser(urlDatabase, userId);
+    if (userURLs[shortURL]) {
+      urlDatabase[shortURL].longURL = newLongURL;
+      res.redirect('/urls');
+    } else {
+      return res.status(400).send('Bad request!');
+    }
+  } else {
+    return res.status(401).send('Unauthorized access!');
+  }
 });
 
 // LOGIN OPTIONS
