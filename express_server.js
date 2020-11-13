@@ -131,11 +131,9 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   let password = req.body.password;
   if (!email || ! password) {
-    res.statusCode = 400;
-    return res.send('Error: Please enter an email and password!');
+    return res.status(400).send('Error: Enter email and password!');
   } else if (getUserByEmail(users, email)) {
-      res.statusCode = 400;
-      return res.send('Error: Email already exists.  Please Sign in!');
+      return res.status(400).send('Error: Email already exists.  Please Sign in!');
   }
   const userId = generateRandomString();
   password = bcrypt.hashSync(req.body.password, 10);
@@ -159,11 +157,9 @@ app.post("/login", (req, res) => {
   const password = req.body.password;
   const userId = getUserByEmail(users, email);
   if (!userId) {
-    response.statusCode = 403;
-    return res.send('Error: Invalid email!');
+    return res.status(400).send('Error: Invalid email!');
   } else if (!bcrypt.compareSync(password, users[userId].password)) {
-    response.statusCode = 403;
-    return res.send('Error: Invalid password!');
+    return res.status(400).send('Error: Invalid password!');
   }
   req.session.user_id = userId;
   res.redirect('/urls');
