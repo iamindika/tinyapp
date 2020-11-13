@@ -24,7 +24,7 @@ const getUserByEmail = (userDb, email) => {
       return userId;
     }
   }
-  return null;
+  return;
 };
 
 const urlsForUser = (urlDb, id) => {
