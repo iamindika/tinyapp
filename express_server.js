@@ -1,22 +1,25 @@
+// IMPORTS
 const express = require("express");
 const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
-const app = express();
-const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const { response } = require("express");
 const bcrypt = require('bcrypt');
 
-
-//MIDDLE-WARE
+// MIDDLEWARE && SERVER SETUP
+const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(cookieSession({
   name: 'session',
   secret:'notmycookies'
 }));
+const PORT = 8080;
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
 
-//DATABASE
+// DATABASES
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
@@ -26,13 +29,25 @@ const users = {
   aJ48lW: {
     id: 'aJ48lW', 
     email: 'admin@myadmin.com',
-    password: bcrypt.hashSync('strongPassword', 10)
+    password: bcrypt.hashSync('1234', 10)   // Password visible for test purposes 
   }
 };
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+// MAIN PAGE
+app.get("/", (req, res) => {
+  if (req.session.user_id) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
+
+app.get("/urls", (req, res) => {
+  const userId = req.session.user_id;
+  const templateVars = {urls: urlsForUser(urlDatabase, userId), user: users[userId]};
+  res.render("urls_index", templateVars);
+});
+
 
 // Create URLs
 app.get("/urls/new", (req, res) => {
@@ -57,9 +72,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 // Display Data
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
@@ -69,11 +82,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/urls", (req, res) => {
-  const userId = req.session.user_id;
-  const templateVars = {urls: urlsForUser(urlDatabase, userId), user: users[userId]};
-  res.render("urls_index", templateVars);
-});
+
 
 
 //"POST" Request Route Handlers
