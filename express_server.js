@@ -10,7 +10,7 @@ const express = require("express");
 // MIDDLEWARE && SERVER SETUP
 const app = express();
 // app.use(bodyParser.urlencoded({extended: true}));
-// app.set("view engine", "ejs");
+app.set("view engine", "ejs");
 // app.use(cookieSession({
 //   name: 'session',
 //   secret:'notmycookies'
@@ -67,11 +67,15 @@ app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
 });
 
-// app.get("/urls", (req, res) => {
-//   const userId = req.session.user_id;
-//   const templateVars = {urls: urlsForUser(urlDatabase, userId), user: users[userId]};
-//   res.render("urls_index", templateVars);
-// });
+app.get("/urls", (req, res) => {
+  // const userId = req.session.user_id;
+  // const templateVars = {urls: urlsForUser(urlDatabase, userId), user: users[userId]};
+  // res.render("urls_index", templateVars);
+  const templateVars = {
+    urls: urlDatabase
+  }
+  res.render("urls_index", templateVars);
+});
 
 
 // CREATE SHORT LINKS
