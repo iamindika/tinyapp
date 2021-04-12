@@ -1,15 +1,40 @@
 // IMPORTS
 const express = require("express");
 // const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 // const cookieSession = require("cookie-session");
 // const { response } = require("express");
 // const bcrypt = require('bcrypt');
 
+function generateRandomString() {
+  let alphaNumStr = '';
+
+  for (let i = 0; i < 6; i++) {
+    let selection = Math.floor(Math.random() * 3);
+
+    switch (selection) {
+      case 0:
+        alphaNumStr += String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+        break;
+      case 1: 
+        alphaNumStr += String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+        break;
+      case 2:
+        alphaNumStr += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+        break;
+      default:
+        break;
+    }
+  }
+
+  return alphaNumStr;
+}
+
+console.log(`AlphaNumericString: ${generateRandomString()}`)
 
 // MIDDLEWARE && SERVER SETUP
 const app = express();
-// app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 // app.use(cookieSession({
 //   name: 'session',
@@ -77,14 +102,25 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app.get("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
+app.post("/urls", (req, res) => {
+  console.log(req.body);
+  res.send("OK  ");
+});
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+
+app.get("/urls/:id", (req, res) => {
+  const shortURL = req.params.id;
   const templateVars = {
     shortURL,
     longURL: urlDatabase[shortURL]
   };
   res.render("urls_show", templateVars);
 });
+
+
 // CREATE SHORT LINKS
 // app.get("/urls/new", (req, res) => {
 //   if (!req.session.user_id) {
