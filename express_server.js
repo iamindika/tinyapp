@@ -77,7 +77,14 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-
+app.get("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const templateVars = {
+    shortURL,
+    longURL: urlDatabase[shortURL]
+  };
+  res.render("urls_show", templateVars);
+});
 // CREATE SHORT LINKS
 // app.get("/urls/new", (req, res) => {
 //   if (!req.session.user_id) {
