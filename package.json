@@ -2,7 +2,7 @@
   "name": "tinyapp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "express_server.js",
   "scripts": {
     "start": "./node_modules/.bin/nodemon -L express_server.js",
     "test": "./node_modules/mocha/bin/mocha"
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/iamindika/tinyapp.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Indika Kolamba Tantrege [ikolamba2@gmail.com]",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/iamindika/tinyapp/issues"
