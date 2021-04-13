@@ -1,12 +1,11 @@
 // IMPORTS
 const express = require("express");
 // const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
-const bodyParser = require("body-parser");
 // const cookieSession = require("cookie-session");
 // const { response } = require("express");
 // const bcrypt = require('bcrypt');
 
-function generateRandomString() {
+const generateRandomString = () => {
   let alphaNumStr = '';
 
   for (let i = 0; i < 6; i++) {
@@ -28,13 +27,11 @@ function generateRandomString() {
   }
 
   return alphaNumStr;
-}
-
-console.log(`AlphaNumericString: ${generateRandomString()}`)
+};
 
 // MIDDLEWARE && SERVER SETUP
 const app = express();
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 // app.use(cookieSession({
 //   name: 'session',
@@ -103,8 +100,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("OK  ");
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = req.body.longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -120,6 +118,10 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:id", (req, res) => {
+  const shortURL = req.params.id;
+  res.redirect(urlDatabase[shortURL]);
+});
 
 // CREATE SHORT LINKS
 // app.get("/urls/new", (req, res) => {
