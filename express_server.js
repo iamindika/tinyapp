@@ -123,3 +123,10 @@ app.post("/logout", (req, res) => {
     .clearCookie("username")
     .redirect("/urls");
 });
+
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies['username']
+  }
+  res.render("user_register", templateVars);
+});

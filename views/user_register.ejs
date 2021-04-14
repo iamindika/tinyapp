@@ -5,21 +5,31 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>URL - TinyApp Example</title>
 </head>
-
 <body>
-  <div class="card text-center">
-    <div class="card-footer text-muted">
-      <h3>REGISTER</h3>
-      <form class="form-inline" action="/register" method="POST">
-        <div class="form-group mb-2">
-          <label for="email">Enter email:</label>
-          <input class="form-control" type="email" name="email" style="width: 300px; margin: 1em">
-          <label for="password">Enter password:</label>
-          <input class="form-control" type="password" name="password" style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Register</button>
-        </div>
-      </form>
-    </div>
+  <%- include('partials/_header') %>
+  <div>
+    <h3 class="text-center">Registration</h3>
+    <form class="container my-2" method="POST" action="/registration">
+      <div class="form-group row">
+        <label for="userEmail" class="col-2 align-self-end">Email Address:</label>
+        <input 
+          type="email" 
+          class="form-control col-3" 
+          id="userEmail"
+          name="email"
+          placeholder="Enter email" /> 
+      </div>
+      <div class="form-group row">
+        <label for="userPassword" class="col-2 align-self-end">Password</label>
+        <input 
+          type="password" 
+          class="form-control col-3" 
+          id="userPassword" 
+          name="password"
+          placeholder="Password" />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
