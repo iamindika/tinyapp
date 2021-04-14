@@ -25,6 +25,19 @@ const generateRandomString = () => {
   return alphaNumStr;
 };
 
+const userValidation = (users, email, password) => {
+  if (email && password) {
+    for (let id in users) {
+      if (users[id].email === email) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
 // MIDDLEWARE && SERVER SETUP
 const app = express();
 const PORT = 8080;
@@ -40,6 +53,8 @@ app.listen(PORT, () => {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
   };
+
+  const userDatabase = {}
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -63,8 +78,9 @@ app.get("/fetch", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const { user_id: userId } = req.cookies;
   const templateVars = {
-    username: req.cookies["username"],
+    user: userDatabase[userId],
     urls: urlDatabase
   }
   res.render("urls_index", templateVars);
@@ -77,16 +93,18 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+  const { user_id: userId } = req.cookies;
   const templateVars = {
-    username: req.cookies["username"]
+    user: userDatabase[userId]
   }
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const { shortURL }= req.params;
+  const { shortURL } = req.params;
+  const { user_id: userId } = req.cookies;
   const templateVars = {
-    username: req.cookies["username"],
+    user: userDatabase[userId],
     shortURL,
     longURL: urlDatabase[shortURL]
   };
@@ -111,22 +129,46 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+// Need further instructions on how to implement login from navbar
 app.post("/login", (req, res) => {
   const { username } = req.body;
-  res
-    .cookie("username", username)
-    .redirect("/urls");
+  res.send("Implement post '/login' endpoint");
 });
 
 app.post("/logout", (req, res) => {
   res
-    .clearCookie("username")
+    .clearCookie("user_id")
     .redirect("/urls");
 });
 
 app.get("/register", (req, res) => {
+  const { user_id } = req.cookies;
   const templateVars = {
-    username: req.cookies['username']
+    user: userDatabase[user_id]
   }
   res.render("user_register", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+  if (userValidation(userDatabase, email, password)) {
+    let id; 
+    do {
+      id = generateRandomString();
+    } while (userDatabase[id]);
+    userDatabase[id] = {
+      id,
+      email,
+      password
+    }
+    res
+    .cookie("user_id", id)
+    .redirect("/urls");
+  } else {
+    res
+      .status(400)
+      .send("User Validation failed! No empty fields or User Exists!");
+  }
+  
+  
 });

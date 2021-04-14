@@ -10,9 +10,9 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (username) { %>
+    <% if (user) { %>
       <div class="d-flex justify-content-end">
-        <p class="my-auto">Logged in as: <%= username %>!</p>
+        <p class="my-auto">Logged in as: <%= user.email %>!</p>
         <form class="form-inline"
           method="POST"
           action="/logout" >
