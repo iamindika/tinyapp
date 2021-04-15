@@ -18,22 +18,21 @@
           action="/logout" >
           <button 
             type="submit"
-            class="btn btn-light bg-transparent mx-sm-3">Logout</button>
+            class="btn btn-light bg-transparent ml-sm-3">Logout</button>
         </form>
       </div>
     <% } else { %>
-      <div>
-        <form class="form-inline d-flex justify-content-end"
-          method="POST"
-          action="/login" >
-          <input type="text"
-            class="form-control"
-            name="username"
-            placeholder="Enter Username" />
-          <button 
-            type="submit" 
-            class="btn btn-light bg-transparent mx-sm-3" >Login</button>
-        </form>
+      <div class="navbar-nav d-flex justify-content-end">
+        <a 
+          class="nav-item nav-link" 
+          href="/login" >
+            Login
+        </a>
+        <a 
+          class="nav-item nav-link ml-sm-3" 
+          href="/register" >
+            Register
+        </a>
       </div>
     <% } %>  
   </nav>

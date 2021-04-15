@@ -25,17 +25,22 @@ const generateRandomString = () => {
   return alphaNumStr;
 };
 
-const userValidation = (users, email, password) => {
-  if (email && password) {
-    for (let id in users) {
-      if (users[id].email === email) {
-        return false;
-      }
+const validateInput = (email, password) => {
+  return email && password;
+};
+
+const findUser = (users, email) => {
+  for (let id in users) {
+    if (users[id].email === email) {
+      return users[id];
     }
-    return true;
   }
 
-  return false;
+  return null;
+};
+
+const validateCredentials = (user, password) => {
+  return user.password === password;
 }
 
 // MIDDLEWARE && SERVER SETUP
@@ -129,13 +134,8 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-// Need further instructions on how to implement login from navbar
-app.post("/login", (req, res) => {
-  const { username } = req.body;
-  res.send("Implement post '/login' endpoint");
-});
-
 app.post("/logout", (req, res) => {
+  console.log(userDatabase);
   res
     .clearCookie("user_id")
     .redirect("/urls");
@@ -151,24 +151,63 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  if (userValidation(userDatabase, email, password)) {
-    let id; 
-    do {
-      id = generateRandomString();
-    } while (userDatabase[id]);
-    userDatabase[id] = {
-      id,
-      email,
-      password
+  if (validateInput(email, password)) {
+    const user = findUser(userDatabase, email);
+    if (!user) {
+      let id; 
+      do {
+        id = generateRandomString();
+      } while (userDatabase[id]);
+      userDatabase[id] = {
+        id,
+        email,
+        password
+      }
+      res
+        .cookie("user_id", id)
+        .redirect("/urls");
+    } else {
+      res
+        .status(400)
+        .send("User already exists!");
     }
-    res
-    .cookie("user_id", id)
-    .redirect("/urls");
   } else {
     res
       .status(400)
-      .send("User Validation failed! No empty fields or User Exists!");
+      .send("Please fill in all fields!");
   }
-  
-  
 });
+
+app.get("/login", (req, res) => {
+  const { user_id: userId } = req.cookies;
+  const templateVars = {
+    user: userDatabase[userId]
+  }
+  res.render("user_login", templateVars);
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (validateInput(email, password)) {
+    const user = findUser(userDatabase, email);
+    if (user) {
+      if (validateCredentials(user, password)) {
+        res
+        .cookie("user_id", user.id)
+        .redirect("/urls");
+      } else {
+        res
+          .status(403)
+          .send("Invalid credentials!");
+      }
+    } else {
+      res
+        .status(403)
+        .send("That user does not exist!");
+    }
+  } else {
+    res
+      .status(403)
+      .send("Please fill in all fields!");
+  }
+})
