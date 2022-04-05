@@ -1,5 +1,5 @@
 // Generates an alphanumeric string of 6 characters and/or digits
-const generateRandomString = () => {
+const getRandomID = () => {
   let str = "";
   for (let i = 0; i < 6; i++) {
     let randomChoice = Math.floor(Math.random() * 3) + 1;
@@ -23,23 +23,43 @@ const generateRandomString = () => {
 // Queries provided user database for an email and returns the associated user object
 const getUserByEmail = (userDb, email) => {
   for (const userId in userDb) {
-    if (email === userDb[userId].email) {
-      return userId;
+    if (userDb[userId].email === email) {
+      return userDb[userId];
     }
   }
-  return;
+
+  return null;
 };
 
 // Queries database and returns urls associated with the provided user "id"
-const urlsForUser = (urlDb, id) => {
-  let userUrls = {};
-  for (const shortURL in urlDb) {
-    if (urlDb[shortURL].userID === id) {
-      userUrls[shortURL] = urlDb[shortURL].longURL;
+const urlsForUser = (urlDb, userID) => {
+  const userURLs = {}
+
+  for (url in urlDb) {
+    if(urlDb[url].userID === userID) {
+      userURLs[url] = { ...urlDb[url] }
     }
   }
-  return userUrls;
-};
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser };
+  return userURLs;
+}
+
+// Appends http protocol to urls missing them
+const getFullyQualifiedURL = (url) => {
+  const prefix = "http://";
+  const securePrefix = "https://";
+
+  if(url.includes(prefix) || url.includes(securePrefix)) {
+    return url;
+  }
+
+  return prefix + url;
+}
+
+module.exports = { 
+  getRandomID, 
+  getUserByEmail, 
+  urlsForUser,
+  getFullyQualifiedURL
+};
 
