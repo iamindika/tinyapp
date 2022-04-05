@@ -30,7 +30,7 @@
         <tbody>
           <% for(let url in urls) { %>
             <tr>
-              <td><%= url %></td>
+              <td><a href="/u/<%= url %>"><%= url %></a></td>
               <td><%= urls[url].longURL %></td>
               <td>
                 <a class="btn btn-outline-primary" href="/urls/<%= url %>">Edit</a>
@@ -46,6 +46,7 @@
       </table>
       <% } else { %>
         <h1>Welcome to Tiny App!</h1>
+        <p>Please Login or Register.</p>
       <% } %>
     </main>
     <!-- Bootstrap JS -->
