@@ -19,7 +19,7 @@
           <p class="card-text">
             <form class="form-inline d-flex justify-content-center" 
               method="POST" 
-              action="/urls/<%= shortURL %>">
+              action="/urls/<%= shortURL %>?_method=PUT">
               <div class="form-group">
                 <label for="longURL">New URL:</label>
                 <input type="text" 
